@@ -1,0 +1,14 @@
+bootbootboot - boot Linux on qemu repeatedly until something fails
+----------------------------------------------------------------------
+
+It's good for diagnosing early boot problems in Linux and/or qemu,
+especially problems which happen only rarely.
+
+Read the instructions at the top of bootbootboot.c
+
+Written by Richard W.M. Jones <rjones@redhat.com>
+Licensed under the GNU General Public License v2 or above.
+
+See also this which is similar but a bit different because it looks
+for repeatable failures only:
+https://people.redhat.com/~rjones/qemu-sanity-check/
