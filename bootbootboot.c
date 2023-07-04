@@ -117,7 +117,7 @@ start_thread (void *vp)
     fflush (stdout);
     pthread_mutex_unlock (&lock);
 
-    fd = open (log_file, O_WRONLY|O_TRUNC|O_CREAT|O_NOCTTY, 0600);
+    fd = open (log_file, O_WRONLY|O_TRUNC|O_CREAT|O_CLOEXEC|O_NOCTTY, 0600);
     if (fd == -1)
       error (EXIT_FAILURE, errno, "open: %s", log_file);
 
