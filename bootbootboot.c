@@ -176,7 +176,8 @@ start_thread (void *vp)
       snprintf (cmd, sizeof cmd, "col -b < %s", log_file);
       system (cmd);
       fprintf (stderr,
-               "*** TEST FAILED AFTER %u ITERATIONS ***\n", iterations);
+               "*** TEST %s AFTER %u ITERATIONS ***\n",
+               test_hanged ? "HUNG" : "FAILED", iterations);
       exit (EXIT_FAILURE);
     case UNCLASSIFIED:
       printf ("\n");
