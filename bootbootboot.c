@@ -25,6 +25,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/prctl.h>
 #include <pthread.h>
 
 /* The number of boot iterations that must pass before we declare success. */
@@ -125,8 +126,11 @@ start_thread (void *vp)
     pid = fork ();
     if (pid == -1)
       error (EXIT_FAILURE, errno, "fork");
-    if (pid == 0) {
-      /* Child process. */
+    if (pid == 0) { /* Child process. */
+      /* Make sure we always kill the test, even if we exit on failure. */
+#ifdef PR_SET_PDEATHSIG
+      prctl (PR_SET_PDEATHSIG, 9);
+#endif
 
       /* Capture stdout & stderr to the temporary file. */
       dup2 (fd, STDOUT_FILENO);
