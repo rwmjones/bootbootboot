@@ -17,11 +17,12 @@ set_up_environment (void)
 }
 
 static void
-create_command_line (char *cmd, size_t len)
+exec_test (void)
 {
-  snprintf (cmd, len,
-            "guestfish -a /dev/null -v "
-            "set-smp 4 : run");
+  execlp ("guestfish",
+          "guestfish", "-a", "/dev/null", "-v",
+          "set-smp", "4", ":", "run",
+          NULL);
 }
 
 static enum test_status

@@ -94,14 +94,12 @@ start_thread (void *vp)
 {
   pid_t pid;
   char log_file[] = "/tmp/bbbout.XXXXXX";
-  char cmd[16384];
+  char cmd[256];
   int fd, i, r, status, test_hanged;
   enum test_status test_status;
 
   if (mkstemp (log_file) == -1)
     error (EXIT_FAILURE, errno, "mkstemp: %s", log_file);
-
-  create_command_line (cmd, sizeof cmd);
 
   /* This runs a loop starting the guest. */
   for (;;) {
@@ -138,7 +136,9 @@ start_thread (void *vp)
       close (fd);
 
       /* Run the command. */
-      _exit (system (cmd) == 0 ? EXIT_SUCCESS : EXIT_FAILURE);
+      exec_test ();
+      perror ("exec");
+      _exit (EXIT_FAILURE);
     }
 
     close (fd);
