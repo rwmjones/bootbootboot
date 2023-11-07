@@ -6,8 +6,9 @@
 #define NAME_OF_TEST \
   "https://bugzilla.redhat.com/show_bug.cgi?id=2216496 using qemu"
 
-#define QEMU "qemu-system-x86_64"
-#define VMLINUX "/boot/vmlinuz-6.3.10-200.fc38.x86_64"
+//#define QEMU "qemu-system-x86_64"
+#define QEMU "/home/rjones/d/qemu/build/qemu-system-x86_64"
+#define VMLINUX "/home/rjones/d/linux/arch/x86/boot/bzImage"
 
 static void
 set_up_environment (void)
@@ -20,7 +21,7 @@ exec_test (void)
 {
   execlp (QEMU, QEMU,
           "-no-user-config", "-nodefaults", "-display", "none",
-          "-machine", "accel=tcg,graphics=off", "-cpu", "max,la57=off",
+          "-machine", "accel=tcg,graphics=off", "-cpu", "max,la57=off,serialize=off",
           "-smp", "4",
           "-m", "1280",
           "-no-reboot",
@@ -43,7 +44,8 @@ check_test_status (const char *output, int test_hanged, int exit_status)
 
   /* Check for expected output (no initramfs or root device). */
   snprintf (cmd, sizeof cmd,
-            "grep -s -q 'VFS: Cannot open root device' %s",
+            "grep -s -q -E "
+            "'VFS: (Cannot open root device|Unable to mount root fs)' %s",
             output);
   r = system (cmd);
   if (r == 0)
