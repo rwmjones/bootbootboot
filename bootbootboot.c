@@ -96,7 +96,8 @@ start_thread (void *vp)
   pid_t pid;
   char log_file[] = "/tmp/bbbout.XXXXXX";
   char cmd[256];
-  int fd, i, r, status, test_hanged;
+  int fd, r, status, test_hanged;
+  time_t start_time, t;
   enum test_status test_status;
 
   if (mkstemp (log_file) == -1)
@@ -148,19 +149,28 @@ start_thread (void *vp)
      * hang.
      */
     status = -1;
-    for (i = 0; i < MAX_TIME; ++i) {
+    time (&start_time);
+    for (;;) {
+      time (&t);
+      test_hanged = t - start_time >= MAX_TIME;
+      if (test_hanged) break;
+
       r = waitpid (pid, &status, WNOHANG);
       if (r == -1)
         error (EXIT_FAILURE, errno, "waitpid");
       if (r > 0) break;
+
       sleep (1);
     }
 
-    test_hanged = i == MAX_TIME;
-    if (test_hanged) kill (pid, 9);
-
     /* Check the test status of this run. */
     test_status = check_test_status (log_file, test_hanged, status);
+
+    /* Kill hanged tests after checking the status so any extra
+     * messages generated here don't disturb the log.
+     */
+    if (test_hanged) kill (pid, 9);
+
     switch (test_status) {
     case PASS:
       pthread_mutex_lock (&lock);
