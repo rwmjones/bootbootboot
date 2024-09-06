@@ -47,7 +47,8 @@ enum test_status { PASS, FAIL, SKIP, UNCLASSIFIED };
 
 /* Include one of these configuration files only! */
 //#include "config-bz2216496-guestfish.h"
-#include "config-bz2216496-qemu.h"
+//#include "config-bz2216496-qemu.h"
+#include "config-kbug219166.h"
 
 /*----------------------------------------------------------------------*/
 
